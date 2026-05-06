@@ -1,0 +1,17 @@
+{
+  "repo": "fathom-parse-log-scope",
+  "thresholds": {
+    "signal": 2,
+    "slack": 1,
+    "confidence": 1,
+    "drag": 5,
+    "ship": 154,
+    "watch": 120
+  },
+  "terms": [
+    "token drift",
+    "grammar width",
+    "label quality",
+    "error locality"
+  ]
+}
