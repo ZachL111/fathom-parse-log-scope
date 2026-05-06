@@ -1,0 +1,32 @@
+{
+  "index": 322,
+  "phase": 2,
+  "batch": 36,
+  "name": "fathom-parse-log-scope",
+  "planned_name": "fathom-parse-log-scope",
+  "language": "Ruby",
+  "category": "Parsers",
+  "goal": "Implement a Ruby parsers project for log resource planning, using capacity fixtures and allocation and spill reports.",
+  "repository_url": "https://github.com/ZachL111/fathom-parse-log-scope",
+  "verification_command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1",
+  "model": {
+    "inputs": [
+      "demand",
+      "capacity",
+      "latency",
+      "risk",
+      "weight"
+    ],
+    "threshold": 177,
+    "risk_penalty": 5,
+    "latency_penalty": 2,
+    "weight_bonus": 2,
+    "decision_rule": "accept when score is greater than or equal to threshold, otherwise review"
+  },
+  "quality_gates": [
+    "readme constraint scan",
+    "fixture presence check",
+    "metadata JSON parse",
+    "language verifier"
+  ]
+}

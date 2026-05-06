@@ -1,43 +1,68 @@
 # fathom-parse-log-scope
 
-fathom-parse-log-scope is a Ruby project for parsers. It focuses on this technical goal: Implement a Ruby parsers project for log resource planning, using capacity fixtures and allocation and spill reports.
+`fathom-parse-log-scope` is a focused Ruby codebase around implement a Ruby parsers project for log resource planning, using capacity fixtures and allocation and spill reports. It is meant to be easy to inspect, run, and extend without a hosted service.
 
-## Why it exists
+## Fathom Parse Log Scope Walkthrough
 
-Small engineering tools are easiest to trust when their rules are explicit, testable, and cheap to run locally. This repository packages a focused model with fixture data and a local verification path so behavior can be reviewed without external services.
+I would read the project from the outside in: command, fixture, model, then roadmap. That keeps the parsers idea grounded in files that can be checked locally.
 
-## Features
+## How It Is Put Together
 
-- Deterministic policy scoring over fixture scenarios.
-- Clear accept or review decisions based on a documented threshold.
-- A command-line or local test path for quick validation.
-- Golden fixture data for repeatable checks.
-- Minimal dependencies and a compact project layout.
+The interesting part is the boundary between accepted and reviewed scenarios. Extended examples sit near that boundary so future edits can show whether the model became more permissive or more cautious. The Ruby code keeps the module small and leans on Minitest for direct fixture checks.
 
-## Architecture Notes
+## Reason For The Project
 
-The core module exposes a small scoring API. Inputs are simple numeric signals: demand, capacity, latency, risk, and weight. The score uses a threshold of 177, risk penalty 5, latency penalty 2, and weight bonus 2. Tests exercise the public API against the fixture cases in `fixtures/cases.csv`.
+This project keeps the domain idea close to the tests. That makes it useful as a reference implementation, a small experiment, or a starting point for a more specialized tool.
 
-## Setup
+## Capabilities
 
-Install the Ruby toolchain and run commands from the repository root.
+- Uses fixture data to keep error labels changes visible in code review.
+- Includes extended examples for grammar boundaries, including `recovery` and `degraded`.
+- Documents golden examples tradeoffs in `docs/operations.md`.
+- Runs locally with a single verification command and no external credentials.
+- Stores project constants and verification metadata in `metadata/project.json`.
 
-## Usage
+## Data Notes
+
+`recovery` is the first example I would inspect because it lands on the `accept` path with a score of 199. The broader file also keeps `degraded` at -4 and `recovery` at 199, which gives the model a useful low-to-high spread.
+
+## Where Things Live
+
+- `lib`: library code
+- `tests`: verification harness
+- `fixtures`: compact golden scenarios
+- `examples`: expanded scenario set
+- `metadata`: project constants and verification metadata
+- `docs`: operations and extension notes
+- `scripts`: local verification and audit commands
+
+## Getting It Running
+
+Clone the repository, enter the directory, and run the verifier. No database server, cloud account, or token is required.
+
+## Command Examples
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-The verification script builds or runs the project and checks the fixture decisions.
+This runs the language-level build or test path against the compact fixture set.
 
-## Tests
+## Check The Work
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
 ```
 
-## Limitations And Roadmap
+The audit command checks repository structure and README constraints before it delegates to the verifier.
 
-- The fixture set is intentionally small so it can be audited by hand.
-- Future work could add richer domain-specific input adapters.
-- The model is a local demonstration and does not claim production use.
+## Tradeoffs
+
+The repository favors determinism over breadth. It does not pull live data, keep secrets, or depend on network access for verification.
+
+## Possible Extensions
+
+- Split the scoring constants into a typed configuration object and validate it before use.
+- Add a comparison mode that shows how decisions change when one signal is adjusted.
+- Add a loader for `examples/extended_cases.csv` and promote selected cases into the language test suite.
+- Add one more parsers fixture that focuses on a malformed or borderline input.
